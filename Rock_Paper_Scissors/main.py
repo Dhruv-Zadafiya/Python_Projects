@@ -1,4 +1,4 @@
-# Welcome to Rock Paper Scissor Game
+# Welcome to Rock Paper Scissor Game.....
 from random import randint
 
 
