@@ -1,3 +1,4 @@
+# This is simple Digital Clock...
 from tkinter import *
 import datetime
 
