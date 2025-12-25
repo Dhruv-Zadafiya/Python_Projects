@@ -1,6 +1,5 @@
-# Welcome to Rock Paper Scissor Game.....
+# Welcome to Rock Paper Scissor Game using Python ..
 from random import randint
-
 
 def main():
     choices = {1: "Rock", 2: "Paper", 3: "Scissor"}
