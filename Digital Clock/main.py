@@ -1,4 +1,4 @@
-# Welcome To My Simple Clock....
+# Welcome to Simple Clock..
 from tkinter import *
 import datetime
 
