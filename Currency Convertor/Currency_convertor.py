@@ -1,12 +1,11 @@
-# Welcome to simple currency convertor .......
+#  Advanced Currency Converter (Modern UI)
 import tkinter as tk
 from tkinter import messagebox
-from PIL import Image, ImageTk
 import requests
 from datetime import datetime
-import os
 
 API_URL = "https://api.exchangerate-api.com/v4/latest/USD"
+
 
 def get_flag(code):
     try:
@@ -14,18 +13,20 @@ def get_flag(code):
     except:
         return "🌍"
 
+
 def fetch_rates():
     try:
         response = requests.get(API_URL, timeout=5)
         if response.status_code == 200:
-            status_label.config(text="Status: Online ", bg="#222", fg="lime")
+            status_label.config(text="Status: Online", fg="#00ff9c")
             return response.json()
         elif response.status_code == 429:
             messagebox.showerror("API Limit", "API request limit reached")
     except:
-        status_label.config(text="Status: Offline ", bg="#222", fg="red")
+        status_label.config(text="Status: Offline", fg="red")
         messagebox.showerror("Network Error", "Internet not available")
     return None
+
 
 def validate_amount():
     try:
@@ -36,6 +37,7 @@ def validate_amount():
     except:
         messagebox.showerror("Invalid Input", "Enter a valid positive number")
         return None
+
 
 def load_currencies():
     data = fetch_rates()
@@ -58,6 +60,7 @@ def load_currencies():
     from_var.set("🇺🇸  USD")
     to_var.set("🇮🇳  INR")
 
+
 def convert_currency():
     amount = validate_amount()
     if amount is None:
@@ -72,7 +75,7 @@ def convert_currency():
     to_code = currency_map[to_var.get()]
 
     if from_code != "USD":
-        amount = amount / rates[from_code]
+        amount /= rates[from_code]
 
     result = amount * rates[to_code]
     result_label.config(text=f"{result:.2f} {to_code}")
@@ -82,96 +85,96 @@ def convert_currency():
         f"{datetime.now().strftime('%H:%M:%S')} | {from_code} → {to_code} = {result:.2f}"
     )
 
-def hover(widget, color_on, color_off):
-    widget.bind("<Enter>", lambda e: widget.config(bg=color_on))
-    widget.bind("<Leave>", lambda e: widget.config(bg=color_off))
+
+def hover(widget, on, off):
+    widget.bind("<Enter>", lambda e: widget.config(bg=on))
+    widget.bind("<Leave>", lambda e: widget.config(bg=off))
+
 
 root = tk.Tk()
 root.title("🌍 Advanced Currency Converter")
 root.geometry("900x550")
-root.resizable(False, False)
-
-overlay = tk.Frame(root, bg="#399EB8")
-overlay.place(relwidth=1, relheight=1)
-overlay.attributes = None
+root.resizable(True,True)
+root.configure(bg="#0f172a")
 
 tk.Label(
-    overlay,
+    root,
     text="🌍 Advanced Currency Converter",
     font=("Segoe UI", 22, "bold"),
-    fg="white",
-    bg="#399EB8"
+    fg="#38bdf8",
+    bg="#0f172a"
 ).pack(pady=15)
 
-main = tk.Frame(overlay, bg="#399EB8")
-main.pack(padx=20, pady=10, fill="both", expand=True)
+main = tk.Frame(root, bg="#0f172a")
+main.pack(fill="both", expand=True, padx=20)
 
-left = tk.Frame(main, bg="#399EB8", padx=20)
+left = tk.Frame(main, bg="#111827", padx=20, pady=20)
 left.pack(side="left", fill="y")
 
-right = tk.Frame(main, bg="#399EB8", padx=20)
+right = tk.Frame(main, bg="#111827", padx=20, pady=20)
 right.pack(side="right", fill="both", expand=True)
 
 currency_map = {}
 
-tk.Label(left, text="Amount", fg="white", bg="#399EB8").pack()
-amount_entry = tk.Entry(left, width=20)
-amount_entry.pack(pady=5)
+label_style = {"fg": "#cbd5f5", "bg": "#111827", "font": ("Segoe UI", 10)}
 
-tk.Label(left, text="From Currency", fg="white", bg="#399EB8").pack()
+tk.Label(left, text="Amount", **label_style).pack(anchor="w")
+amount_entry = tk.Entry(left, font=("Segoe UI", 12), bg="#020617",
+                        fg="white", insertbackground="white", relief="flat")
+amount_entry.pack(fill="x", pady=5)
+
+tk.Label(left, text="From Currency", **label_style).pack(anchor="w")
 from_var = tk.StringVar()
 from_menu = tk.OptionMenu(left, from_var, "")
-from_menu.pack()
+from_menu.config(bg="#020617", fg="white", relief="flat")
+from_menu.pack(fill="x", pady=5)
 
-tk.Label(left, text="To Currency", fg="white", bg="#111").pack()
+tk.Label(left, text="To Currency", **label_style).pack(anchor="w")
 to_var = tk.StringVar()
 to_menu = tk.OptionMenu(left, to_var, "")
-to_menu.pack()
+to_menu.config(bg="#020617", fg="white", relief="flat")
+to_menu.pack(fill="x", pady=5)
 
 convert_btn = tk.Button(
-    left, text="Convert", bg="#28a745", fg="white",
-    font=("Arial", 11, "bold"), width=15, command=convert_currency
+    left, text="Convert", font=("Segoe UI", 11, "bold"),
+    bg="#22c55e", fg="black", relief="flat", height=2,
+    command=convert_currency
 )
-convert_btn.pack(pady=10)
-hover(convert_btn, "#34d058", "#2AEA57")
+convert_btn.pack(fill="x", pady=10)
+hover(convert_btn, "#4ade80", "#22c55e")
 
 refresh_btn = tk.Button(
-    left, text="Refresh Rates", bg="#007bff", fg="white",
-    width=15, command=load_currencies
+    left, text="Refresh Rates", font=("Segoe UI", 10),
+    bg="#3b82f6", fg="white", relief="flat", height=2,
+    command=load_currencies
 )
-refresh_btn.pack()
-hover(refresh_btn, "#9047c8", "#9047c8")
+refresh_btn.pack(fill="x")
+hover(refresh_btn, "#60a5fa", "#3b82f6")
 
-result_label = tk.Label(left, text="", font=("Arial", 14, "bold"),
-                        fg="black", bg="#F3F4F4", width=25)
-result_label.pack(pady=15)
+result_label = tk.Label(
+    left, text="", font=("Segoe UI", 15, "bold"),
+    fg="#22c55e", bg="#020617", pady=10
+)
+result_label.pack(fill="x", pady=15)
 
-tk.Label(right, text="Conversion History",
-         fg="white", bg="#399EB8", font=("Arial", 14, "bold")).pack()
+tk.Label(
+    right, text="Conversion History",
+    fg="#38bdf8", bg="#111827",
+    font=("Segoe UI", 14, "bold")
+).pack(anchor="w")
+
+history_frame = tk.Frame(right, bg="#020617")
+history_frame.pack(fill="both", expand=True, pady=10)
 
 history_list = tk.Listbox(
-    right, height=18, width=55,
-    bg="#399EB8", fg="white", selectbackground="#222", borderwidth=0
-)
-history_frame = tk.Frame(right, bg="#222", bd=2, relief="ridge")
-history_frame.pack(pady=10, padx=5, fill="both", expand=True)
-
-history_list = tk.Listbox(
-    history_frame,
-    height=18,
-    width=55,
-    bg="#399EB8",
-    fg="white",
-    selectbackground="#222",
-    borderwidth=0,  
+    history_frame, bg="#020617", fg="white",
+    selectbackground="#334155", relief="flat"
 )
 history_list.pack(fill="both", expand=True)
 
-history_list.pack(pady=10)
-
 status_label = tk.Label(
     root, text="Status: Ready",
-    bg="#399EB8", fg="white", anchor="w"
+    bg="#020617", fg="white", anchor="w", padx=10
 )
 status_label.pack(side="bottom", fill="x")
 
